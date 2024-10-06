@@ -1,0 +1,36 @@
+name: Java Build
+
+on:
+  workflow_call:
+    inputs:
+      container_image:
+        required: true
+        type: string      
+      build_commands:
+        required: true
+        type: string
+      artifact_name:
+        required: true
+        type: string
+      artifact_paths:
+        required: true
+        type: string
+      
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ inputs.container_image }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build project
+        run: |
+          ${{ inputs.build_commands }}
+          
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact_name }}
+          path: ${{ inputs.artifact_paths }}
+          retention-days: 1
