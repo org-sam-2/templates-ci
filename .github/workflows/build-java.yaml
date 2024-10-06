@@ -9,9 +9,6 @@ on:
       build_commands:
         required: true
         type: string
-      artifact_name:
-        required: true
-        type: string
       artifact_paths:
         required: true
         type: string
