@@ -43,9 +43,6 @@ on:
                 required: false
                 default: 'false'
 
-permissions:
-  id-token: write
-
 jobs:    
     publish:
         runs-on: ${{ inputs.runs_on }}
