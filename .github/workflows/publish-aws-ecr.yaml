@@ -58,6 +58,8 @@ jobs:
                 name: build-artifact
                 path: ${{ inputs.downloaded_name_artifacts }}
             
+            - run: ls -l
+            
             - name: Analyze Dockerfile
               uses: hadolint/hadolint-action@v3.1.0
               with:
