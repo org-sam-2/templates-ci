@@ -60,7 +60,8 @@ jobs:
             - name: Check VALUES
               run: |
                 echo "VAR_ACCOUNT_ID ${{ vars.AWS_ACCOUNT_ID }} - INPUT_ACCOUNT_ID ${{ inputs.aws_account_id }} - ROLE_NAME ${{ inputs.aws_role_last_name }}"
-                echo "FULL_ROLE: ${{ inputs.aws_role_name }}" 
+                echo "FULL_ROLE_1: ${{ inputs.aws_role_name }}" 
+                echo "FULL_ROLE_2: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/${{ inputs.aws_role_last_name }}" 
 
             # - uses: actions/checkout@v4
             
