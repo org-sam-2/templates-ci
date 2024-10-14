@@ -37,6 +37,9 @@ on:
             aws_account_id:
                 type: string
                 required: true
+            aws_role_name:
+                type: string
+                required: true
             aws_region:
                 type: string
                 required: false
@@ -55,7 +58,9 @@ jobs:
             URI_ECR: "${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com"
         steps:
             - name: Check VALUES
-              run: echo "VAR_ACCOUNT_ID ${{ vars.AWS_ACCOUNT_ID }} - INPUT_ACCOUNT_ID ${{ inputs.aws_account_id }} - ROLE_NAME ${{ inputs.aws_role_last_name }}"
+              run: |
+                echo "VAR_ACCOUNT_ID ${{ vars.AWS_ACCOUNT_ID }} - INPUT_ACCOUNT_ID ${{ inputs.aws_account_id }} - ROLE_NAME ${{ inputs.aws_role_last_name }}"
+                echo "FULL_ROLE: ${{ inputs.aws_role_name }}" 
 
             # - uses: actions/checkout@v4
             
