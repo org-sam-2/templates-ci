@@ -56,14 +56,12 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                 name: build-artifact
-                path: ${{ inputs.downloaded_name_artifacts }}
-            
-            - run: ls -l
+                path: ${{ inputs.downloaded_name_artifacts }}            
             
             - name: Analyze Dockerfile
               uses: hadolint/hadolint-action@v3.1.0
               with:
-                dockerfile: ${{ inputs.dockerfile_path }}
+                dockerfile: ${{ inputs.dockerfile }}
                 no-fail: ${{ inputs.hadolint_no_fail }}
             
             - name: Configure AWS credentials
