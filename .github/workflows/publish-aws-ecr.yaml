@@ -34,6 +34,7 @@ on:
             aws_role_last_name:
                 type: string
                 required: true
+                description: 'arn:aws:iam::AWS_ACCOUNT_ID:role/AWS_ROLE_LAST_NAME'
             aws_region:
                 type: string
                 required: false
@@ -42,6 +43,7 @@ on:
                 type: string
                 required: false
                 default: 'false'
+                description: 'Use platforms linux/amd64,linux/arm64'
 
 jobs:    
     publish:
