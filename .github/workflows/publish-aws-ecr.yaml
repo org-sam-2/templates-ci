@@ -1,0 +1,92 @@
+name: Publish to AWS ECR
+
+on:
+    workflow_call:
+        inputs:
+            downloaded_name_artifacts:
+                type: string
+                required: false
+                default: artifacts
+            dockerfile:
+                type: string
+                required: false
+                default: ./Dockerfile
+            docker_build_context:
+                type: string
+                required: false
+                default: ./
+            docker_push_ecr:
+                type: boolean
+                required: false
+                default: true
+            hadolint_no_fail:
+                type: boolean
+                required: false
+                default: true
+            aws_role_to_assume:
+                type: string
+                required: true
+            aws_region:
+                type: string
+                required: false
+                default: us-east-1
+            multi_platform:
+                type: string
+                required: false
+                default: 'false'
+
+jobs:    
+    publish:
+        runs-on: ubuntu-latest
+        env:
+            IMAGE_REPO: "${{ github.repository }}/${{ github.ref_name }}"
+            URI_ECR: "${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com"
+        steps:
+            - uses: actions/checkout@v4
+            
+            - uses: actions/download-artifact@v4
+              with:
+                name: build-artifact
+                path: ${{ inputs.downloaded_name_artifacts }}
+            
+            - name: Analyze Dockerfile
+              uses: hadolint/hadolint-action@v3.1.0
+              with:
+                dockerfile: ${{ inputs.dockerfile_path }}
+                no-fail: ${{ inputs.hadolint_no_fail }}
+            
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                role-to-assume: ${{ inputs.aws_role_to_assume }}
+                aws-region: ${{ inputs.aws_region }}
+            
+            - name: Login to Amazon ECR
+              uses: aws-actions/amazon-ecr-login@v2
+
+            - name: Ensure ECR Repository Exists
+              run: |
+                aws ecr describe-repositories --repository-names "${{ env.IMAGE_REPO }}" || \
+                aws ecr create-repository --repository-name "${{ env.IMAGE_REPO }}"
+
+            - name: Set up QEMU
+              uses: docker/setup-qemu-action@v3
+              if: ${{ inputs.multi_platform == 'true' }}
+  
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+              if: ${{ inputs.multi_platform == 'true' }}
+
+            - name: Set platforms
+              run: |
+                echo "PLATFORMS=$( [ '${{ inputs.multi_platform }}' == 'true' ] && echo 'linux/amd64,linux/arm64' || echo 'linux/amd64' )" >> $GITHUB_ENV
+            
+            - name: Build and Push Docker image to ECR
+              uses: docker/build-push-action@v4
+              with:
+                context: ${{ inputs.docker_build_context }}
+                push: ${{ inputs.docker_push_ecr }}
+                platforms: ${{ env.PLATFORMS }}
+                tags: |
+                    ${{ env.URI_ECR }}/${{ env.IMAGE_REPO }}:${{ github.run_id }}
+                    ${{ env.URI_ECR }}/${{ env.IMAGE_REPO }}:latest
