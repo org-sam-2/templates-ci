@@ -17,7 +17,7 @@ on:
         description: "The file paths to the build artifacts that should be uploaded for later use."
       retention_days:
         type: number
-        required: true
+        required: false
         default: 1
         description: "The number of days the uploaded artifacts should be retained in GitHub Actions."
 
