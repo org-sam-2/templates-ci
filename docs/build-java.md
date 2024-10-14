@@ -22,7 +22,7 @@ jobs:
       container_image: public.ecr.aws/docker/library/gradle:7.3.3-jdk17-alpine
       build_commands: |
         ./gradlew --version
-        ./gradlew assemble --info
+        ./gradlew build
       artifact_paths: |
         build/
         arquivos.txt

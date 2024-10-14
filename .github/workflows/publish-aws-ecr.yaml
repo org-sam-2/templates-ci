@@ -7,43 +7,46 @@ on:
                 type: string
                 required: false
                 default: ubuntu-latest
+                description: 'Specifies the type of runner on which the job will execute. Defaults to the latest Ubuntu runner.'
             environment:
                 type: string
                 required: false
                 default: ''
+                description: 'Defines the environment context for the job, such as production or staging.'
             downloaded_name_artifacts:
                 type: string
                 required: false
                 default: artifacts
+                description: 'Sets the directory name where artifacts will be downloaded.'
             dockerfile:
                 type: string
                 required: false
                 default: ./Dockerfile
+                description: 'Specifies the path to the Dockerfile used for building the Docker image.'
             docker_build_context:
                 type: string
                 required: false
                 default: ./
+                description: 'Defines the build context directory for the Docker build process.'
             docker_push_ecr:
                 type: boolean
                 required: false
                 default: true
+                description: 'Determines whether the built Docker image should be pushed to AWS ECR.'
             hadolint_no_fail:
                 type: boolean
                 required: false
                 default: true
+                description: 'Configures the Hadolint action to fail the workflow on linting errors if set to false.'
             aws_role_last_name:
                 type: string
                 required: true
-                description: 'arn:aws:iam::AWS_ACCOUNT_ID:role/AWS_ROLE_LAST_NAME'
-            aws_region:
-                type: string
-                required: false
-                default: us-east-1
+                description: 'If you created an AWS IAM role ARN in the format arn:aws:iam::AWS_ACCOUNT_ID:role/AWS_ROLE_LAST_NAME, specify only the last name AWS_ROLE_LAST_NAME.'
             multi_platform:
                 type: string
                 required: false
                 default: 'false'
-                description: 'Use platforms linux/amd64,linux/arm64'
+                description: 'Indicates whether to build for multiple platforms (linux/amd64,linux/arm64) when set to true.'
 
 jobs:    
     publish:
@@ -70,7 +73,7 @@ jobs:
               uses: aws-actions/configure-aws-credentials@v4
               with:
                 role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/${{ inputs.aws_role_last_name }}
-                aws-region: ${{ inputs.aws_region }}
+                aws-region: ${{ vars.AWS_REGION }}
             
             - name: Login to Amazon ECR
               uses: aws-actions/amazon-ecr-login@v2
