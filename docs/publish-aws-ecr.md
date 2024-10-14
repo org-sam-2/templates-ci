@@ -35,5 +35,5 @@ Este repositório contém um workflow reutilizável do GitHub Actions para publi
         docker_build_context: .
         docker_push_ecr: true
         hadolint_no_fail: true
-        aws_role_last_name: github-oicd
+        aws_role_last_name: nome-da-role
         multi_platform: 'false'
