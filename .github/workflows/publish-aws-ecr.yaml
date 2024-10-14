@@ -54,54 +54,54 @@ jobs:
             IMAGE_REPO: "${{ github.repository }}/${{ github.ref_name }}"
             URI_ECR: "${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com"
         steps:
-            - name: Check Environment
-              run: echo "The current environment is ${{ github.ref_name }}"
+            - name: Check VALUES
+              run: echo "VAR_ACCOUNT_ID ${{ vars.AWS_ACCOUNT_ID }} - INPUT_ACCOUNT_ID ${{ inputs.aws_account_id }} - ROLE_NAME ${{ inputs.aws_role_last_name }}"
 
-            - uses: actions/checkout@v4
+            # - uses: actions/checkout@v4
             
-            - uses: actions/download-artifact@v4
-              with:
-                name: build-artifact
-                path: ${{ inputs.downloaded_name_artifacts }}            
+            # - uses: actions/download-artifact@v4
+            #   with:
+            #     name: build-artifact
+            #     path: ${{ inputs.downloaded_name_artifacts }}            
             
-            - name: Analyze Dockerfile
-              uses: hadolint/hadolint-action@v3.1.0
-              with:
-                dockerfile: ${{ inputs.dockerfile }}
-                no-fail: ${{ inputs.hadolint_no_fail }}
+            # - name: Analyze Dockerfile
+            #   uses: hadolint/hadolint-action@v3.1.0
+            #   with:
+            #     dockerfile: ${{ inputs.dockerfile }}
+            #     no-fail: ${{ inputs.hadolint_no_fail }}
             
-            - name: Configure AWS credentials
-              uses: aws-actions/configure-aws-credentials@v4
-              with:
-                role-to-assume: arn:aws:iam::${{ inputs.aws_account_id }}:role/${{ inputs.aws_role_last_name }}
-                aws-region: ${{ inputs.aws_region }}
+            # - name: Configure AWS credentials
+            #   uses: aws-actions/configure-aws-credentials@v4
+            #   with:
+            #     role-to-assume: arn:aws:iam::${{ inputs.aws_account_id }}:role/${{ inputs.aws_role_last_name }}
+            #     aws-region: ${{ inputs.aws_region }}
             
-            - name: Login to Amazon ECR
-              uses: aws-actions/amazon-ecr-login@v2
+            # - name: Login to Amazon ECR
+            #   uses: aws-actions/amazon-ecr-login@v2
 
-            - name: Ensure ECR Repository Exists
-              run: |
-                aws ecr describe-repositories --repository-names "${{ env.IMAGE_REPO }}" || \
-                aws ecr create-repository --repository-name "${{ env.IMAGE_REPO }}"
+            # - name: Ensure ECR Repository Exists
+            #   run: |
+            #     aws ecr describe-repositories --repository-names "${{ env.IMAGE_REPO }}" || \
+            #     aws ecr create-repository --repository-name "${{ env.IMAGE_REPO }}"
 
-            - name: Set up QEMU
-              uses: docker/setup-qemu-action@v3
-              if: ${{ inputs.multi_platform == 'true' }}
+            # - name: Set up QEMU
+            #   uses: docker/setup-qemu-action@v3
+            #   if: ${{ inputs.multi_platform == 'true' }}
   
-            - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v3
-              if: ${{ inputs.multi_platform == 'true' }}
+            # - name: Set up Docker Buildx
+            #   uses: docker/setup-buildx-action@v3
+            #   if: ${{ inputs.multi_platform == 'true' }}
 
-            - name: Set platforms
-              run: |
-                echo "PLATFORMS=$( [ '${{ inputs.multi_platform }}' == 'true' ] && echo 'linux/amd64,linux/arm64' || echo 'linux/amd64' )" >> $GITHUB_ENV
+            # - name: Set platforms
+            #   run: |
+            #     echo "PLATFORMS=$( [ '${{ inputs.multi_platform }}' == 'true' ] && echo 'linux/amd64,linux/arm64' || echo 'linux/amd64' )" >> $GITHUB_ENV
             
-            - name: Build and Push Docker image to ECR
-              uses: docker/build-push-action@v4
-              with:
-                context: ${{ inputs.docker_build_context }}
-                push: ${{ inputs.docker_push_ecr }}
-                platforms: ${{ env.PLATFORMS }}
-                tags: |
-                    ${{ env.URI_ECR }}/${{ env.IMAGE_REPO }}:${{ github.run_id }}
-                    ${{ env.URI_ECR }}/${{ env.IMAGE_REPO }}:latest
+            # - name: Build and Push Docker image to ECR
+            #   uses: docker/build-push-action@v4
+            #   with:
+            #     context: ${{ inputs.docker_build_context }}
+            #     push: ${{ inputs.docker_push_ecr }}
+            #     platforms: ${{ env.PLATFORMS }}
+            #     tags: |
+            #         ${{ env.URI_ECR }}/${{ env.IMAGE_REPO }}:${{ github.run_id }}
+            #         ${{ env.URI_ECR }}/${{ env.IMAGE_REPO }}:latest
