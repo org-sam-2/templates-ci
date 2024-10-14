@@ -3,6 +3,14 @@ name: Publish to AWS ECR
 on:
     workflow_call:
         inputs:
+            runs_on:
+                type: string
+                required: false
+                default: ubuntu-latest
+            environment:
+                type: string
+                required: false
+                default: ''
             downloaded_name_artifacts:
                 type: string
                 required: false
@@ -37,6 +45,8 @@ on:
 
 jobs:    
     publish:
+        runs-on: ${{ inputs.runs_on }}
+        environment: ${{ inputs.environment }}
         env:
             IMAGE_REPO: "${{ github.repository }}/${{ github.ref_name }}"
             URI_ECR: "${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com"
