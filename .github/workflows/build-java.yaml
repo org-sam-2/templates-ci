@@ -4,14 +4,19 @@ on:
   workflow_call:
     inputs:
       container_image:
-        required: true
-        type: string      
+        type: string
+        required: true              
       build_commands:
-        required: true
         type: string
+        required: true
       artifact_paths:
-        required: true
         type: string
+        required: true
+      retention_days:
+        type: number
+        required: true
+        default: 1
+        
       
 
 jobs:
@@ -29,4 +34,4 @@ jobs:
         with:
           name: build-artifact
           path: ${{ inputs.artifact_paths }}
-          retention-days: 1
+          retention-days: ${{ inputs.retention_days }}
