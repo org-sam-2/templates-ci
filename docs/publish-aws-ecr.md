@@ -6,7 +6,7 @@ Este repositório contém um workflow reutilizável do GitHub Actions para publi
 
 ### Pré-requisitos
 
-- **Conta AWS:** Certifique-se de ter uma conta AWS e configurado o [OICD (OpenID Connect](https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services)
+- **Conta AWS:** Certifique-se de ter uma conta AWS e configurado o [OICD (OpenID Connect)](https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services)
  para usar IAM Role com permissão no AWS ECR.
 - **Variáveis:** As variáveis `AWS_ACCOUNT_ID` e `AWS_REGION` devem ser configuradas a nível de repositório.
 
