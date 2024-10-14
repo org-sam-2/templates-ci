@@ -37,7 +37,6 @@ on:
 
 jobs:    
     publish:
-        runs-on: ubuntu-latest
         env:
             IMAGE_REPO: "${{ github.repository }}/${{ github.ref_name }}"
             URI_ECR: "${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com"
