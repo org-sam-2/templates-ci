@@ -34,12 +34,6 @@ on:
             aws_role_last_name:
                 type: string
                 required: true
-            aws_account_id:
-                type: string
-                required: true
-            aws_role_name:
-                type: string
-                required: true
             aws_region:
                 type: string
                 required: false
@@ -57,12 +51,6 @@ jobs:
             IMAGE_REPO: "${{ github.repository }}/${{ github.ref_name }}"
             URI_ECR: "${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com"
         steps:
-            - name: Check VALUES
-              run: |
-                echo "VAR_ACCOUNT_ID ${{ vars.AWS_ACCOUNT_ID }} - INPUT_ACCOUNT_ID ${{ inputs.aws_account_id }} - ROLE_NAME ${{ inputs.aws_role_last_name }}"
-                echo "FULL_ROLE_1: ${{ inputs.aws_role_name }}" 
-                echo "FULL_ROLE_2: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/${{ inputs.aws_role_last_name }}" 
-
             # - uses: actions/checkout@v4
             
             # - uses: actions/download-artifact@v4
@@ -76,14 +64,14 @@ jobs:
             #     dockerfile: ${{ inputs.dockerfile }}
             #     no-fail: ${{ inputs.hadolint_no_fail }}
             
-            # - name: Configure AWS credentials
-            #   uses: aws-actions/configure-aws-credentials@v4
-            #   with:
-            #     role-to-assume: arn:aws:iam::${{ inputs.aws_account_id }}:role/${{ inputs.aws_role_last_name }}
-            #     aws-region: ${{ inputs.aws_region }}
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/${{ inputs.aws_role_last_name }}
+                aws-region: ${{ inputs.aws_region }}
             
-            # - name: Login to Amazon ECR
-            #   uses: aws-actions/amazon-ecr-login@v2
+            - name: Login to Amazon ECR
+              uses: aws-actions/amazon-ecr-login@v2
 
             # - name: Ensure ECR Repository Exists
             #   run: |
